@@ -2,6 +2,7 @@ package com.demo.boot_pro.common.exception;
 
 import com.demo.boot_pro.common.exception.errorcode.CommonErrorCode;
 import com.demo.boot_pro.common.vo.ResponseResult;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +20,9 @@ import javax.xml.transform.Result;
 public class ExceptionHandle {
 
 
-    @ExceptionHandler(value = Exception.class)
+
+
+  /*  @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public ResponseResult handle(HttpServletRequest request, HttpServletResponse response,Exception e) {
         ResponseResult responseResult = new ResponseResult();
@@ -29,7 +32,7 @@ public class ExceptionHandle {
         responseResult.setSuccess(false);
         responseResult.setData(e.toString());
         return responseResult;
-    }
+    }*/
 /*
 
    public static final String DEFAULT_ERROR_VIEW = "error";

@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 /**
  * HTTP 响应json值的标准bean
- * Created by Administrator on 2018/11/23 0023.
+ * Created by DIAN on 2018/11/23 0023.
  */
 public class ResponseResult<T> implements Serializable {
-    private static final long serialVersionUID = 5117636053371320760L;
 
+
+    private static final long serialVersionUID = -5675781424666765046L;
     private String errMsg;
     private Integer errCode;
     private Boolean success;
