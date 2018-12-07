@@ -13,9 +13,9 @@ import java.util.Map;
  */
 @Service
 public class SystemConfigService {
-
-
+    @Autowired
     private SystemConfigMapper systemConfigMapper;
+
     public ProResponseResult create(Map params) {
         ProResponseResult proResponseResult = new ProResponseResult();
         SystemConfig systemConfig = new SystemConfig();

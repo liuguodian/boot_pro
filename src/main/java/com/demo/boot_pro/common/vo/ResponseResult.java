@@ -1,6 +1,7 @@
 package com.demo.boot_pro.common.vo;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * HTTP 响应json值的标准bean
@@ -18,6 +19,7 @@ public class ResponseResult<T> implements Serializable {
     public ResponseResult() {
         this.errCode = 0;
         this.errMsg = "操作成功";
+        this.success =true;
     }
 
     public ResponseResult(Integer errCode, String errMsg, T data) {
