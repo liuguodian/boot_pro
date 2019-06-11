@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +21,17 @@ import java.util.List;
 public class ImageUtils {
 
     public static void main(String[] args) {
-        List<String> bookFilePaths = new ArrayList<String>();
+
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new FileInputStream(new File("C:\\Users\\Administrator\\Desktop\\1.jpg")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+       /* List<String> bookFilePaths = new ArrayList<String>();
         bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\1.jpg");
         bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\2.jpg");
         bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\3.jpg");
@@ -28,9 +39,22 @@ public class ImageUtils {
         bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\5.jpg");
         bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\6.jpg");
         bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\7.jpg");
-        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\8.jpg");
-        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\9.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\1.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\2.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\3.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\4.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\5.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\6.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\7.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\1.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\2.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\3.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\4.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\5.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\6.jpg");
+        bookFilePaths.add("C:\\Users\\DIAN\\Desktop\\ssss\\7.jpg");
         String picName = "C:\\Users\\DIAN\\Desktop\\ssss\\test1.jpg";
+        String whiteUrl = "C:\\Users\\DIAN\\Desktop\\ssss\\10.jpg";
         for (String jpg : bookFilePaths) {
             try {//裁切图片200*200
                 doFileDownload(jpg,
@@ -40,7 +64,7 @@ public class ImageUtils {
             }
         }
 //多张小图片生成九宫格图片600*600
-        createBigJPG(bookFilePaths, Color.gray, picName);
+        createBigJPG(bookFilePaths, Color.gray, picName,9,whiteUrl);*/
     }
 
 
@@ -51,7 +75,7 @@ public class ImageUtils {
      * @param bgColor
      * @param picName
      */
-    private static void createBigJPG(List<String> smallJPG, Color bgColor, String picName) {
+    private static void createBigJPG(List<String> smallJPG, Color bgColor, String picName,int type,String whiteUrl) {
         try {
             int imageCount = smallJPG.size();
             //每张小图片的高度，宽度
@@ -59,18 +83,36 @@ public class ImageUtils {
             int smallHeight = 200;
             //按照大图片宽高绘制一个背景图片
             int setWidth = 600;
-            int setHeight = 600;
+            int setHeight = 1400;
             BufferedImage bufImage = new BufferedImage(setWidth, setHeight,
                     BufferedImage.TYPE_INT_RGB);
             Graphics2D g = bufImage.createGraphics();
             g.setColor(bgColor); //背景的颜色
             g.fillRect(0, 0, setWidth, setHeight);
-            int rowCount = getRowCount(imageCount);
-            int leftMargin[] = {200, 100, 0};//左边距
             int topMargin[] = {200, 100, 0};//左边距
             int len = 0;
-            int y = topMargin[rowCount - 1]; //纵坐标
-            for (int i = 1; i <= rowCount; i++) { //遍历每行
+            int y = 0; //纵坐标
+            int leftMargin[] = {200, 100, 0};//左边距
+
+            int rowCount =7;
+            if(type==2){
+                getTwo( rowCount,  imageCount,
+                 smallJPG, len, g, y,
+                 smallWidth, smallHeight,whiteUrl);
+            }else if(type==0){
+                getZero( rowCount,  imageCount,
+                        smallJPG, len, g, y,
+                        smallWidth, smallHeight,whiteUrl);
+            }else if(type==1){
+                getOne( rowCount,  imageCount,
+                        smallJPG, len, g, y,
+                        smallWidth, smallHeight,whiteUrl);
+            }else if(type==9){
+                getNine( rowCount,  imageCount,
+                        smallJPG, len, g, y,
+                        smallWidth, smallHeight,whiteUrl);
+            }
+            /*for (int i = 1; i <= rowCount; i++) { //遍历每行
                 int colCount = getColCount(imageCount, rowCount, i);
                 int x = leftMargin[colCount - 1]; //横坐标  可能会出现左边距
                 for (int j = 1; j <= colCount; j++) {
@@ -82,7 +124,7 @@ public class ImageUtils {
                     len++;
                 }
                 y += smallHeight;
-            }
+            }*/
             g.dispose();
             FileOutputStream out = new FileOutputStream(picName);  //指定输出文件
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);  //设置文件格式
@@ -97,15 +139,222 @@ public class ImageUtils {
         }
     }
 
-    //获取总行数
-    public static int getRowCount(int imageCount) {
-        if (imageCount > 6) {
-            return 3;
+    /**
+     * 生成 2
+     * */
+    private static void getTwo(int rowCount, int imageCount,
+                         List<String> smallJPG,int len,Graphics2D g,int y,
+                         int smallWidth,int smallHeight,String whiteUrl){
+        int leftMargin[] = {200, 100, 0};//左边距
+        for (int i = 0; i < 7; i++) {
+            int colCount = getColCount(imageCount, rowCount, i);
+            int x = leftMargin[colCount - 1]; //横坐标  可能会出现左边距
+            if(i==1||i==2){
+                for (int j = 0; j < 3; j++) {
+                    if(j==2){
+                        String jpgname = smallJPG.get(len);
+                        ImageIcon icon = new ImageIcon(jpgname);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                        len++;
+                    }else {
+                        ImageIcon icon = new ImageIcon(whiteUrl);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                    }
+
+                }
+            }else if(i==4||i==5){
+                for (int j = 0; j < 3; j++) {
+                    if(j==0){
+                        String jpgname = smallJPG.get(len);
+                        ImageIcon icon = new ImageIcon(jpgname);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                        len++;
+                    }else {
+                        ImageIcon icon = new ImageIcon(whiteUrl);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                    }
+
+                }
+            }else{
+                for (int j = 0; j < 3; j++) {
+                    String jpgname = smallJPG.get(len);
+                    ImageIcon icon = new ImageIcon(jpgname);
+                    Image img = icon.getImage();
+                    g.drawImage(img, x, y, null);
+                    x += smallWidth;
+                    len++;
+                }
+            }
+            y += smallHeight;
         }
-        if (imageCount > 3) {
-            return 2;
+    }
+
+    /**
+     * 生成 0
+     * */
+    private static void getZero(int rowCount, int imageCount,
+                               List<String> smallJPG,int len,Graphics2D g,int y,
+                               int smallWidth,int smallHeight,String whiteUrl){
+        int leftMargin[] = {200, 100, 0};//左边距
+        for (int i = 0; i < 7; i++) {
+            int colCount = getColCount(imageCount, rowCount, i);
+            int x = leftMargin[colCount - 1]; //横坐标  可能会出现左边距
+            if(i==0||i==6){
+                for (int j = 0; j < 3; j++) {
+                    String jpgname = smallJPG.get(len);
+                    ImageIcon icon = new ImageIcon(jpgname);
+                    Image img = icon.getImage();
+                    g.drawImage(img, x, y, null);
+                    x += smallWidth;
+                    len++;
+                }
+            }else{
+                for (int j = 0; j < 3; j++) {
+                    if(j==0||j==2){
+                        String jpgname = smallJPG.get(len);
+                        ImageIcon icon = new ImageIcon(jpgname);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                        len++;
+                    }else {
+                        ImageIcon icon = new ImageIcon(whiteUrl);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                    }
+
+                }
+            }
+            y += smallHeight;
         }
-        return 1;
+    }
+
+    /**
+     * 生成 1
+     * */
+    private static void getOne(int rowCount, int imageCount,
+                               List<String> smallJPG,int len,Graphics2D g,int y,
+                               int smallWidth,int smallHeight,String whiteUrl){
+        int leftMargin[] = {200, 100, 0};//左边距
+        for (int i = 0; i < 7; i++) {
+            int colCount = getColCount(imageCount, rowCount, i);
+            int x = leftMargin[colCount - 1]; //横坐标  可能会出现左边距
+            if(i==1){
+                for (int j = 0; j < 3; j++) {
+                    if(j==2){
+                        ImageIcon icon = new ImageIcon(whiteUrl);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                    }else {
+                        String jpgname = smallJPG.get(len);
+                        ImageIcon icon = new ImageIcon(jpgname);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                        len++;
+
+                    }
+
+                }
+
+
+            }else if(i==6){
+                for (int j = 0; j < 3; j++) {
+                    String jpgname = smallJPG.get(len);
+                    ImageIcon icon = new ImageIcon(jpgname);
+                    Image img = icon.getImage();
+                    g.drawImage(img, x, y, null);
+                    x += smallWidth;
+                    len++;
+                }
+            }else{
+                for (int j = 0; j < 3; j++) {
+                    if(j==1){
+                        String jpgname = smallJPG.get(len);
+                        ImageIcon icon = new ImageIcon(jpgname);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                        len++;
+                    }else {
+                        ImageIcon icon = new ImageIcon(whiteUrl);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                    }
+
+                }
+            }
+            y += smallHeight;
+        }
+    }
+
+    /**
+     * 生成 9
+     * */
+    private static void getNine(int rowCount, int imageCount,
+                               List<String> smallJPG,int len,Graphics2D g,int y,
+                               int smallWidth,int smallHeight,String whiteUrl){
+        int leftMargin[] = {200, 100, 0};//左边距
+        for (int i = 0; i < 7; i++) {
+            int colCount = getColCount(imageCount, rowCount, i);
+            int x = leftMargin[colCount - 1]; //横坐标  可能会出现左边距
+            if(i==0||i==3||i==6){
+                for (int j = 0; j < 3; j++) {
+                    String jpgname = smallJPG.get(len);
+                    ImageIcon icon = new ImageIcon(jpgname);
+                    Image img = icon.getImage();
+                    g.drawImage(img, x, y, null);
+                    x += smallWidth;
+                    len++;
+                }
+            }else if(i==1||i==2){
+                for (int j = 0; j < 3; j++) {
+                    if(j==0||j==2){
+                        String jpgname = smallJPG.get(len);
+                        ImageIcon icon = new ImageIcon(jpgname);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                        len++;
+                    }else {
+                        ImageIcon icon = new ImageIcon(whiteUrl);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                    }
+
+                }
+            }else{
+                for (int j = 0; j < 3; j++) {
+                    if(j==2){
+                        String jpgname = smallJPG.get(len);
+                        ImageIcon icon = new ImageIcon(jpgname);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                        len++;
+                    }else {
+                        ImageIcon icon = new ImageIcon(whiteUrl);
+                        Image img = icon.getImage();
+                        g.drawImage(img, x, y, null);
+                        x += smallWidth;
+                    }
+
+                }
+            }
+            y += smallHeight;
+        }
     }
 
       //获取当前行的列数
@@ -116,10 +365,33 @@ public class ImageUtils {
             } else {
                 return 3;
             }
-        }
-        if (rowcount == 3) {
+        }else if (rowcount == 3) {
             if (currentRow == 1) {
                 return imageCount - 6;
+            } else {
+                return 3;
+            }
+        }else if (rowcount == 4) {
+            if (currentRow == 1) {
+                return imageCount - 9;
+            } else {
+                return 3;
+            }
+        }else if (rowcount == 5) {
+            if (currentRow == 1) {
+                return imageCount - 12;
+            } else {
+                return 3;
+            }
+        }else if (rowcount == 6) {
+            if (currentRow == 1) {
+                return imageCount - 15;
+            } else {
+                return 3;
+            }
+        }else if (rowcount == 7) {
+            if (currentRow == 1) {
+                return imageCount - 18;
             } else {
                 return 3;
             }
@@ -169,4 +441,5 @@ public class ImageUtils {
         out.close();
 
     }
+
 }
