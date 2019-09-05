@@ -19,10 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Excel操作工具
@@ -162,17 +159,29 @@ public final class ExcelUntils {
     }
 
     public static void main(String[] args) {
-        File file = new File("E:\\ICBC\\靶向药和手术\\rjss.xlsx");
+        File file = new File("C:\\Users\\DIAN\\Desktop\\sj.xls");
+        Set<Object> provinceList =new HashSet<>();
         try {
             List<List<Object>> dd  = ExcelUntils.readExcel(file);
             List<Map<String,Object>> result = new ArrayList<>();
             for(List<Object> list:dd){
                  Map<String ,Object> map = new HashMap<>();
-                 map.put("code",list.get(0));
-                 map.put("name",list.get(1));
-                 map.put("riskLevel",list.get(2));
-                 map.put("paymentMultiples",Double.parseDouble(list.get(3).toString()));
+                 map.put("name",list.get(0));
+                 map.put("province",list.get(1));
+                 map.put("city",list.get(2));
+                 map.put("grade",list.get(3).toString());
+                 provinceList.add(list.get(1));
                  result.add(map);
+            }
+            Map<Object,Object> ss = new HashMap<>();
+            for(Object one: provinceList){
+                 Set<Object>  set = new HashSet<>();
+                 for(List<Object> list:dd){
+                     if(one.equals(list.get(1))){
+                         set.add(list.get(2));
+                     }
+                 }
+                ss.put(one,set);
             }
             System.out.println(JSON.toJSONString(result));
         } catch (IOException e) {
