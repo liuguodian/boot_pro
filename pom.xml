@@ -42,6 +42,29 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.8</version>
 		</dependency>
+		<!--fastjson-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.60</version>
+		</dependency>
+		<!--POI start-->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.13</version>
+		</dependency>
+		<!--POI end-->
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+		</dependency>
 
 	</dependencies>
 
